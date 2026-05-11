@@ -112,7 +112,7 @@
 
   <!-- Preload fonts
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="preload" href="/fonts/LXGWWenKaiLite-Medium.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="/fonts/LXGWWenKaiLite-Medium.ttf" as="font" type="font/ttf" crossorigin media="(min-width: 769px)">
 
   <!-- CSS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -154,6 +154,8 @@
   <% } %>
   <script src="/js/navigation-init.js" defer></script>
   <script src="/js/media-init.js" defer></script>
+  <script src="/js/math-init.js" defer></script>
+  <script src="/js/mermaid-init.js" defer></script>
   <script src="/js/theme-toggle.js" defer></script>
   <% if (is_archive()) { %>
   <script src="/js/archive-search.js" defer></script>
@@ -163,8 +165,6 @@
   <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
   <%- css('css/prism-dark.css') %>
   <%- css('css/prism-line-numbers.css') %>
-  <script src="/js/math-init.js" defer></script>
-  <script src="/js/mermaid-init.js" defer></script>
   <script src="/js/code-tools.js" defer></script>
   <script src="/js/reveal-init.js" defer></script>
   <script src="/js/reading-progress.js" defer></script>

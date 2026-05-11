@@ -42,6 +42,52 @@
 
       document.title = doc.title;
       currentContent.replaceWith(nextContent);
+      const nextLanguage = doc.documentElement.getAttribute('lang');
+      if (nextLanguage) {
+        document.documentElement.setAttribute('lang', nextLanguage);
+      }
+
+      const currentHead = document.head;
+      const nextHead = doc.head;
+      const preservedSelectors = [
+        'meta[charset]',
+        'meta[name="viewport"]',
+        'script[src="/js/theme-config.js"]',
+        'script[src="/js/navigation-init.js"]',
+        'script[src="/js/media-init.js"]',
+        'script[src="/js/math-init.js"]',
+        'script[src="/js/mermaid-init.js"]',
+        'script[src="/js/theme-toggle.js"]',
+        'script[src="/js/site-init.js"]'
+      ];
+
+      const currentScripts = Array.from(currentHead.querySelectorAll('script[src], link[rel="stylesheet"], link[rel="preconnect"], link[rel="dns-prefetch"]'));
+      currentScripts.forEach((node) => {
+        if (preservedSelectors.some((selector) => node.matches(selector))) {
+          return;
+        }
+        node.remove();
+      });
+
+      Array.from(nextHead.children).forEach((node) => {
+        if (
+          node.tagName === 'TITLE' ||
+          node.matches('meta[charset], meta[name="viewport"]') ||
+          node.matches('script[src="/js/theme-config.js"], script[src="/js/navigation-init.js"], script[src="/js/media-init.js"], script[src="/js/math-init.js"], script[src="/js/mermaid-init.js"], script[src="/js/theme-toggle.js"], script[src="/js/site-init.js"]')
+        ) {
+          return;
+        }
+
+        if (node.tagName === 'LINK' && node.getAttribute('rel') === 'stylesheet') {
+          currentHead.appendChild(node.cloneNode(true));
+          return;
+        }
+
+        if (node.tagName === 'LINK' && (node.getAttribute('rel') === 'preconnect' || node.getAttribute('rel') === 'dns-prefetch')) {
+          currentHead.appendChild(node.cloneNode(true));
+        }
+      });
+
       if (options.replace) {
         window.history.replaceState({}, doc.title, url.href);
       } else {
