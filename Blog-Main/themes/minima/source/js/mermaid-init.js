@@ -74,13 +74,9 @@
     return window.mermaid.run({ querySelector: '.mermaid' }).catch(() => {});
   };
 
-  const signalContentReady = () => {
-    document.dispatchEvent(new CustomEvent(events.contentReady || 'op:content-ready'));
-  };
-
   document.addEventListener('DOMContentLoaded', initMermaidDiagrams);
   document.addEventListener(events.pageReady || 'op:page-ready', (event) => {
-    const promise = initMermaidDiagrams().finally(signalContentReady);
+    const promise = initMermaidDiagrams();
     if (event.detail && Array.isArray(event.detail.promises)) {
       event.detail.promises.push(promise);
     }

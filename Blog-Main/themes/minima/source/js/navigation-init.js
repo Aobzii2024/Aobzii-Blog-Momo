@@ -31,7 +31,8 @@
       return;
     }
 
-    document.documentElement.classList.add('is-navigating');
+      document.documentElement.classList.remove('is-loading');
+      document.documentElement.classList.add('is-navigating');
 
     try {
       const response = await fetch(url.href, {
