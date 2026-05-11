@@ -2,5 +2,13 @@ node_modules/
 public/
 db.json
 .deploy_git/
+.vercel/
+.vscode/
+.idea/
 *.log
+*.tmp
 .DS_Store
+Blog-Main/node_modules/
+Blog-Main/public/
+Blog-Main/db.json
+Blog-Main/.deploy_git/

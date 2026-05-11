@@ -54,7 +54,7 @@
               <div class="archive-item-title-row">
                 <a href="<%- url_for(post.path) %>" class="interactive-link"><%- post.title || '未命名' %></a>
                 <% if (post.tags && post.tags.length) { %>
-                  <div class="archive-item-tags"><%- list_tags(post.tags, {class: 'classtest', show_count: false, style: false}) %></div>
+                  <div class="archive-item-tags"><%- list_tags(post.tags, {class: 'archive-item-tag-list', show_count: false, style: false}) %></div>
                 <% } %>
               </div>
             </div>

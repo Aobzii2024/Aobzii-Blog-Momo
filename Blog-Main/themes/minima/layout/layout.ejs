@@ -27,12 +27,16 @@
   }
 
   const cleanUrl = url.replace(/index\.html$/, '');
-  let pageDescription = config.description;
+  let pageDescription = config.description || '';
 
   if (is_page() && page.description) {
     pageDescription = page.description;
   } else if (page.content) {
-    pageDescription = strip_html(page.content).replace(/\n/g, ' ').replace(/^\s*/, '').replace(/\s*$/, '').substring(0, 150);
+    const contentDescription = strip_html(page.content).replace(/\n/g, ' ').replace(/^\s*/, '').replace(/\s*$/, '');
+    pageDescription = contentDescription.substring(0, 150);
+    if (contentDescription.length > 150) {
+      pageDescription += '...';
+    }
   }
 
   let socialImage = '';
@@ -43,6 +47,7 @@
   }
 
   const isContentPage = is_post() || is_page();
+  const ogType = isContentPage ? 'article' : 'website';
   %>
   <title><%= title %></title>
   <% if (config.sitemap) { %>
@@ -55,7 +60,7 @@
     <% const pageTagNames = []; page.tags.each(function(tag){ pageTagNames.push(tag.name); }); %>
   <meta name="tag" content="<%- pageTagNames.join(', ') %>">
   <% } %>
-  <% if (config.keywords) { %>
+  <% if (config.keywords && String(config.keywords).trim()) { %>
   <meta name="keywords" content="<%= config.keywords %>">
   <% } %>
   <meta name="author" content="<%- config.author %>">
@@ -63,7 +68,7 @@
   <meta property="og:image" content="<%- socialImage %>">
   <% } %>
   <meta property="og:site_name" content="<%= config.title %>" />
-  <meta property="og:type" content="article" />
+  <meta property="og:type" content="<%= ogType %>" />
   <meta property="og:title" content="<%= title %>" />
   <meta property="og:description" content="<%= pageDescription %>">
   <meta property="og:url" content="<%= cleanUrl %>" />
@@ -114,8 +119,6 @@
   <%- css('css/normalize.css') %>
   <%- css('css/skeleton.css') %>
   <%- css('css/custom.css') %>
-  <%- css('css/prism-dark.css') %>
-  <%- css('css/prism-line-numbers.css') %>
   <!-- User css -->
   <% if (theme.usercss) { %>
   <%- css(theme.usercss) %>
@@ -145,21 +148,27 @@
       }
     };
   </script>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
   <script src="/js/theme-config.js" defer></script>
   <% if (theme.picjs) { %>
   <script src="<%- theme.picjs %>" defer></script>
   <% } %>
   <script src="/js/navigation-init.js" defer></script>
   <script src="/js/media-init.js" defer></script>
+  <script src="/js/theme-toggle.js" defer></script>
+  <% if (is_archive()) { %>
+  <script src="/js/archive-search.js" defer></script>
+  <% } %>
+  <% if (is_post()) { %>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+  <%- css('css/prism-dark.css') %>
+  <%- css('css/prism-line-numbers.css') %>
   <script src="/js/math-init.js" defer></script>
   <script src="/js/mermaid-init.js" defer></script>
-  <script src="/js/theme-toggle.js" defer></script>
-  <script src="/js/archive-search.js" defer></script>
   <script src="/js/code-tools.js" defer></script>
   <script src="/js/reveal-init.js" defer></script>
   <script src="/js/reading-progress.js" defer></script>
+  <% } %>
 
 </head>
 

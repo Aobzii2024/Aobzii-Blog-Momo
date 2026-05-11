@@ -15,7 +15,7 @@
   <% } %>
 
   <% entries.forEach(function(item){ %>
-    <article class="daily-card" data-tags="<%- item.tag || '' %>">
+    <article class="daily-card" data-tags="<%- Array.isArray(item.tag) ? item.tag.join(' ') : (item.tag || '') %>">
       <header class="daily-card-head">
         <% if (item.tag) { %>
           <span class="daily-tag"><%- item.tag %></span>

@@ -8,12 +8,12 @@ subtitle: 'Aobzii2024'
 description: 'The missing tea egg, found in writing.'
 keywords:
 author: Aobzii
-language: zh-cn
-timezone: ''
+language: zh-CN
+timezone: Asia/Shanghai
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: http://ramblings.aobzii.top
+url: https://ramblings.aobzii.top
 permalink: :year/:month/:day/:slug/
 permalink_defaults:
 pretty_urls:
@@ -42,7 +42,7 @@ filename_case: 0
 render_drafts: false
 post_asset_folder: false
 relative_link: false
-future: true
+future: false
 syntax_highlighter: highlight.js
 highlight:
   line_number: true
@@ -101,6 +101,14 @@ ignore:
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
 theme: minima
+
+sitemap:
+  path: sitemap.xml
+
+feed:
+  type: atom
+  path: atom.xml
+  limit: 20
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
