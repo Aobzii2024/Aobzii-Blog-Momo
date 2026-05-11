@@ -106,9 +106,85 @@
     })();
   </script>
   <style>
-    html { background: #fff; }
-    html.darkmode { background: rgb(34, 34, 38); color: rgb(230, 230, 230); }
-    html.darkmode body { background: rgb(34, 34, 38); color: rgb(230, 230, 230); }
+    html {
+      background: #fff;
+      color: #222;
+      color-scheme: light;
+    }
+
+    html.darkmode {
+      background: rgb(34, 34, 38);
+      color: rgb(230, 230, 230);
+      color-scheme: dark;
+    }
+
+    body {
+      margin: 10px;
+      padding: 5px;
+      min-height: calc(100vh - 20px);
+      background: #fff;
+      overflow-x: clip;
+    }
+
+    html.darkmode body {
+      background: rgb(34, 34, 38);
+      color: rgb(230, 230, 230);
+    }
+
+    .container {
+      position: relative;
+    }
+
+    .site-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent 68%);
+    }
+
+    html.darkmode .site-backdrop {
+      background-image: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    }
+
+    .trans {
+      position: relative;
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .header-divider,
+    .footer-divider {
+      border-color: rgba(0, 0, 0, 0.12);
+    }
+
+    html.darkmode .header-divider,
+    html.darkmode .footer-divider {
+      border-color: rgba(255, 255, 255, 0.14);
+    }
+
+    .nav-links,
+    .home-hero,
+    .post-shell,
+    .archive-shell,
+    .daily-page,
+    .page-content,
+    .markdown-content {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .theme-toggle,
+    .interactive-link,
+    .footer-link {
+      text-decoration: none;
+    }
+
     html.is-loading .trans,
     html.is-rendering .trans {
       visibility: hidden;

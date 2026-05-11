@@ -21,7 +21,7 @@
   };
 
   const shouldUseNativeNavigation = () => {
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return true;
   };
 
   const loadPage = async (url, options = {}) => {
