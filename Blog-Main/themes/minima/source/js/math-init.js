@@ -29,42 +29,62 @@
 
   const typesetMath = () => {
     if (window.MathJax && window.MathJax.typesetPromise) {
-      window.MathJax.typesetPromise();
+      return window.MathJax.typesetPromise();
     }
+
+    return Promise.resolve();
   };
 
   const loadMathJax = () => {
     if (window.MathJax && window.MathJax.typesetPromise) {
-      typesetMath();
-      return;
+      return typesetMath();
     }
 
     if (document.querySelector('script[data-mathjax-loader]')) {
-      return;
+      return Promise.resolve();
     }
 
     const script = document.createElement('script');
     script.src = '/js/tex-svg.js';
     script.defer = true;
     script.dataset.mathjaxLoader = '1';
-    script.addEventListener('load', typesetMath, { once: true });
+    const loaded = new Promise((resolve) => {
+      script.addEventListener('load', resolve, { once: true });
+      script.addEventListener('error', resolve, { once: true });
+    });
     document.head.appendChild(script);
+
+    return loaded.then(typesetMath);
   };
+
+  const waitForMathJaxReady = () => new Promise((resolve) => {
+    const poll = () => {
+      if (window.MathJax && window.MathJax.startup && window.MathJax.startup.promise) {
+        window.MathJax.startup.promise.then(resolve);
+        return;
+      }
+
+      resolve();
+    };
+
+    poll();
+  });
 
   const initMathEnhancements = () => {
     normalizeDisplayMathBlocks();
 
     if (!hasMathContent()) {
-      return;
+      return Promise.resolve();
     }
 
-    if (window.MathJax && window.MathJax.startup && window.MathJax.startup.promise) {
-      window.MathJax.startup.promise.then(typesetMath);
-    } else {
-      loadMathJax();
-    }
+    return Promise.resolve(loadMathJax()).then(waitForMathJaxReady).then(typesetMath);
   };
 
   document.addEventListener('DOMContentLoaded', initMathEnhancements);
-  document.addEventListener(events.pageReady || 'op:page-ready', initMathEnhancements);
+  document.addEventListener(events.pageReady || 'op:page-ready', (event) => {
+    const promise = initMathEnhancements();
+    if (event.detail && Array.isArray(event.detail.promises)) {
+      event.detail.promises.push(promise);
+    }
+  });
 })();

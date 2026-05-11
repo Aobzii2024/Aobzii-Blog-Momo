@@ -14,7 +14,8 @@
   };
 
   const events = {
-    pageReady: 'op:page-ready'
+    pageReady: 'op:page-ready',
+    contentReady: 'op:content-ready'
   };
 
   const attributes = {

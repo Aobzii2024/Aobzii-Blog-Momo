@@ -19,21 +19,24 @@
     });
 
     if (!mermaidCodeBlocks.length && !plaintextFigures.length) {
-      return;
+      return Promise.resolve();
     }
 
     if (!window.mermaid) {
       if (document.querySelector('script[data-mermaid-loader]')) {
-        return;
+        return Promise.resolve();
       }
 
       const script = document.createElement('script');
       script.src = 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js';
       script.defer = true;
       script.dataset.mermaidLoader = '1';
-      script.addEventListener('load', initMermaidDiagrams, { once: true });
+      const loaded = new Promise((resolve) => {
+        script.addEventListener('load', resolve, { once: true });
+        script.addEventListener('error', resolve, { once: true });
+      });
       document.head.appendChild(script);
-      return;
+      return loaded.then(initMermaidDiagrams);
     }
 
     window.mermaid.initialize({
@@ -68,9 +71,18 @@
       figure.replaceWith(container);
     });
 
-    window.mermaid.run({ querySelector: '.mermaid' }).catch(() => {});
+    return window.mermaid.run({ querySelector: '.mermaid' }).catch(() => {});
+  };
+
+  const signalContentReady = () => {
+    document.dispatchEvent(new CustomEvent(events.contentReady || 'op:content-ready'));
   };
 
   document.addEventListener('DOMContentLoaded', initMermaidDiagrams);
-  document.addEventListener(events.pageReady || 'op:page-ready', initMermaidDiagrams);
+  document.addEventListener(events.pageReady || 'op:page-ready', (event) => {
+    const promise = initMermaidDiagrams().finally(signalContentReady);
+    if (event.detail && Array.isArray(event.detail.promises)) {
+      event.detail.promises.push(promise);
+    }
+  });
 })();

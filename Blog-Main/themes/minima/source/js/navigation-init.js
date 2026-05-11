@@ -6,8 +6,18 @@
 
   const navigationStateKey = state.navigationBound || '__opNavigationFeedbackBound';
 
-  const emitPageReady = () => {
-    document.dispatchEvent(new CustomEvent(events.pageReady || 'op:page-ready'));
+  const emitPageReady = async () => {
+    const detail = { promises: [] };
+    document.dispatchEvent(new CustomEvent(events.pageReady || 'op:page-ready', { detail }));
+
+    if (detail.promises.length) {
+      await Promise.race([
+        Promise.allSettled(detail.promises),
+        new Promise((resolve) => window.setTimeout(resolve, 1800))
+      ]);
+    }
+
+    document.dispatchEvent(new CustomEvent(events.contentReady || 'op:content-ready'));
   };
 
   const shouldUseNativeNavigation = () => {
@@ -41,6 +51,7 @@
       }
 
       document.title = doc.title;
+      document.documentElement.classList.add('is-rendering');
       currentContent.replaceWith(nextContent);
       const nextLanguage = doc.documentElement.getAttribute('lang');
       if (nextLanguage) {
@@ -95,10 +106,11 @@
       }
 
       window.scrollTo(0, 0);
-      emitPageReady();
+      await emitPageReady();
     } catch (error) {
       window.location.href = url.href;
     } finally {
+      document.documentElement.classList.remove('is-rendering');
       document.documentElement.classList.add('is-loaded');
       window.setTimeout(() => {
         document.documentElement.classList.remove('is-navigating');

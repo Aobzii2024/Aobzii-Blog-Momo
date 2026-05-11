@@ -92,6 +92,7 @@
 
   <script>
     (function () {
+      document.documentElement.classList.add('is-loading');
       try {
         if (localStorage.getItem('preferredTheme') === 'dark') {
           document.documentElement.classList.add('darkmode');
@@ -108,6 +109,11 @@
     html { background: #fff; }
     html.darkmode { background: rgb(34, 34, 38); color: rgb(230, 230, 230); }
     html.darkmode body { background: rgb(34, 34, 38); color: rgb(230, 230, 230); }
+    html.is-loading .trans,
+    html.is-rendering .trans {
+      visibility: hidden;
+      opacity: 0;
+    }
   </style>
 
   <!-- Preload fonts
