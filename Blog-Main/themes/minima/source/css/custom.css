@@ -332,9 +332,14 @@ html.theme-switching .theme-toggle {
 }
 
 html.is-navigating .trans {
-  opacity: 0.62;
+  opacity: 0.38;
   transform: translateY(6px) scale(0.996);
   filter: blur(1px);
+}
+
+html.is-rendering .trans {
+  visibility: hidden;
+  opacity: 0;
 }
 
 html::after {

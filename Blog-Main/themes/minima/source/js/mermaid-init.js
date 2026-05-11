@@ -2,6 +2,7 @@
   const config = window.__minimaTheme || {};
   const selectors = config.selectors || {};
   const events = config.events || {};
+  let mermaidLoadingPromise = null;
 
   const initMermaidDiagrams = () => {
     const mermaidCodeBlocks = Array.from(
@@ -23,20 +24,20 @@
     }
 
     if (!window.mermaid) {
-      if (document.querySelector('script[data-mermaid-loader]')) {
-        return Promise.resolve();
+      if (mermaidLoadingPromise) {
+        return mermaidLoadingPromise.then(initMermaidDiagrams);
       }
 
       const script = document.createElement('script');
       script.src = 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js';
       script.defer = true;
       script.dataset.mermaidLoader = '1';
-      const loaded = new Promise((resolve) => {
+      mermaidLoadingPromise = new Promise((resolve) => {
         script.addEventListener('load', resolve, { once: true });
         script.addEventListener('error', resolve, { once: true });
       });
       document.head.appendChild(script);
-      return loaded.then(initMermaidDiagrams);
+      return mermaidLoadingPromise.then(initMermaidDiagrams);
     }
 
     window.mermaid.initialize({

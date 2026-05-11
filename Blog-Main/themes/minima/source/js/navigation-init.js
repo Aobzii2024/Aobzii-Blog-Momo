@@ -21,7 +21,7 @@
   };
 
   const shouldUseNativeNavigation = () => {
-    return window.matchMedia('(max-width: 640px), (pointer: coarse)').matches;
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   };
 
   const loadPage = async (url, options = {}) => {

@@ -2,6 +2,7 @@
   const config = window.__minimaTheme || {};
   const selectors = config.selectors || {};
   const events = config.events || {};
+  let mathJaxLoadingPromise = null;
 
   const normalizeDisplayMathBlocks = () => {
     const paragraphs = document.querySelectorAll(selectors.markdownParagraph || '.markdown-content p');
@@ -40,27 +41,27 @@
       return typesetMath();
     }
 
-    if (document.querySelector('script[data-mathjax-loader]')) {
-      return Promise.resolve();
+    if (mathJaxLoadingPromise) {
+      return mathJaxLoadingPromise.then(typesetMath);
     }
 
     const script = document.createElement('script');
     script.src = '/js/tex-svg.js';
     script.defer = true;
     script.dataset.mathjaxLoader = '1';
-    const loaded = new Promise((resolve) => {
+    mathJaxLoadingPromise = new Promise((resolve) => {
       script.addEventListener('load', resolve, { once: true });
       script.addEventListener('error', resolve, { once: true });
     });
     document.head.appendChild(script);
 
-    return loaded.then(typesetMath);
+    return mathJaxLoadingPromise.then(typesetMath);
   };
 
   const waitForMathJaxReady = () => new Promise((resolve) => {
     const poll = () => {
       if (window.MathJax && window.MathJax.startup && window.MathJax.startup.promise) {
-        window.MathJax.startup.promise.then(resolve);
+        window.MathJax.startup.promise.then(resolve).catch(resolve);
         return;
       }
 
