@@ -92,7 +92,6 @@
 
   <script>
     (function () {
-      document.documentElement.classList.add('is-loading');
       try {
         if (localStorage.getItem('preferredTheme') === 'dark') {
           document.documentElement.classList.add('darkmode');
@@ -185,11 +184,6 @@
       text-decoration: none;
     }
 
-    html.is-loading .trans,
-    html.is-rendering .trans {
-      visibility: hidden;
-      opacity: 0;
-    }
   </style>
 
   <!-- Preload fonts

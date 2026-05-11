@@ -10,14 +10,26 @@
     paragraphs.forEach((paragraph) => {
       const raw = (paragraph.textContent || '').trim();
       const isDisplayMath = raw.startsWith('$$') && raw.endsWith('$$') && raw.length > 4;
+      const hasInlineMath = /\$[^\n]+\$/.test(raw);
 
-      if (!isDisplayMath) {
+      if (!isDisplayMath && !hasInlineMath) {
         return;
       }
 
-      const block = document.createElement('div');
-      block.textContent = raw;
-      paragraph.replaceWith(block);
+      paragraph.classList.add('math-pending');
+
+      if (isDisplayMath) {
+        const block = document.createElement('div');
+        block.className = 'math-pending';
+        block.textContent = raw;
+        paragraph.replaceWith(block);
+      }
+    });
+  };
+
+  const revealMath = () => {
+    document.querySelectorAll('.math-pending').forEach((node) => {
+      node.classList.remove('math-pending');
     });
   };
 
@@ -78,7 +90,7 @@
       return Promise.resolve();
     }
 
-    return Promise.resolve(loadMathJax()).then(waitForMathJaxReady).then(typesetMath);
+    return Promise.resolve(loadMathJax()).then(waitForMathJaxReady).then(typesetMath).finally(revealMath);
   };
 
   document.addEventListener('DOMContentLoaded', initMathEnhancements);

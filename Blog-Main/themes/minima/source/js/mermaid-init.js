@@ -49,7 +49,7 @@
       const source = block.textContent || '';
       const container = document.createElement('div');
 
-      container.className = 'mermaid';
+      container.className = 'mermaid mermaid-pending';
       container.textContent = source;
 
       const pre = block.closest('pre');
@@ -67,12 +67,16 @@
       }
 
       const container = document.createElement('div');
-      container.className = 'mermaid';
+      container.className = 'mermaid mermaid-pending';
       container.textContent = code.textContent || '';
       figure.replaceWith(container);
     });
 
-    return window.mermaid.run({ querySelector: '.mermaid' }).catch(() => {});
+    return window.mermaid.run({ querySelector: '.mermaid' }).catch(() => {}).finally(() => {
+      document.querySelectorAll('.mermaid-pending').forEach((node) => {
+        node.classList.remove('mermaid-pending');
+      });
+    });
   };
 
   document.addEventListener('DOMContentLoaded', initMermaidDiagrams);
