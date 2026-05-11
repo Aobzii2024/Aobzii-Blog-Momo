@@ -17,6 +17,11 @@
     return window.matchMedia('(max-width: 640px), (pointer: coarse), (prefers-reduced-motion: reduce)').matches;
   };
 
+  const isTooTallForReveal = (node) => {
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+    return viewportHeight > 0 && node.getBoundingClientRect().height > viewportHeight * 0.8;
+  };
+
   const markRevealItems = () => {
     const nodes = Array.from(document.querySelectorAll(revealSelector));
 
@@ -28,6 +33,10 @@
     nodes.forEach((node, index) => {
       node.classList.add('reveal-item');
       node.style.setProperty('--reveal-delay', `${Math.min(index, 14) * 36}ms`);
+
+      if (isTooTallForReveal(node)) {
+        node.classList.add('is-visible');
+      }
     });
 
     if (!('IntersectionObserver' in window)) {
@@ -45,8 +54,8 @@
         });
       },
       {
-        threshold: 0.12,
-        rootMargin: '0px 0px -8% 0px'
+        threshold: 0.01,
+        rootMargin: '0px 0px 8% 0px'
       }
     );
 
